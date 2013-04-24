@@ -17,14 +17,14 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Display;
 import android.view.WindowManager;
 import android.graphics.Point;
+import jonasz.pamula.therealsnake.board.Board;
 
 class SnakeThread extends Thread {
-    private final int FPS = 20;
+    private final int FPS = 30;
     private final int FRAME_DURATION_MS = 1000/FPS;
 
     private SurfaceHolder mSurfaceHolder;
@@ -42,7 +42,14 @@ class SnakeThread extends Thread {
         mBoard = board;
     }
 
+    public void setBoard(Board board){
+        synchronized(mBoard){
+            mBoard = board;
+        }
+    }
+
     public void run() {
+        Utils.log("Thread started");
         while (mRunning) {
             Canvas c = null;
             try {
@@ -55,7 +62,7 @@ class SnakeThread extends Thread {
                 }
             }
         }
-        Log.i("snake", "Thread stopped");
+        Utils.log("Thread stopped");
     }
 
     private void doDraw(Canvas canvas) {
@@ -71,7 +78,7 @@ class SnakeThread extends Thread {
         long duration = FRAME_DURATION_MS - elapsed;
 
         lasttick = Math.max(current, lasttick + FRAME_DURATION_MS);
-        //Log.i("snake", "Last tick: " + (new Long(lasttick)).toString());
+        //Utils.log("Last tick: " + (new Long(lasttick)).toString());
 
         if(duration > 0){
             try {
@@ -122,31 +129,49 @@ class SnakeView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void onWindowFocusChanged(boolean hasWindowFocus) {
-        Log.i("snake", "onWindowFocusChanged");
+        Utils.log("onWindowFocusChanged");
     }
 
     // SurfaceHandler.Callback callbacks follow
+    private int mSurfaceWidth = -1, mSurfaceHeight = -1;
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
-        mBoard.setSurfaceSize(width, height);
-        Log.i("snake", "surfaceChanged");
+        mSurfaceWidth = width;
+        mSurfaceHeight = height;
+        mBoard.setSurfaceSize(mSurfaceWidth, mSurfaceHeight);
+        Utils.log("surfaceChanged");
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.i("snake", "surfaceCreated");
+        Utils.log("surfaceCreated");
         mSnakeThread = new SnakeThread(holder, mBoard);
         mSnakeThread.start();
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.i("snake", "surfaceDestroyed");
+        Utils.log("surfaceDestroyed");
         mSnakeThread.stopRunning();
         while (true) {
             try {
                 mSnakeThread.join();
+                Utils.log("thread join succeeded");
                 break;
             } catch (InterruptedException e) { }
         }
         mSnakeThread = null;
+    }
+
+    public void handleUserInput(int dir, int action){
+        synchronized(mBoard){
+            if(mBoard.mState == Board.STATE_GAME_OVER){
+                if(action == Board.KEY_DOWN) {
+                    mBoard = new Board();
+                    mBoard.setSurfaceSize(mSurfaceWidth, mSurfaceHeight);
+                    mSnakeThread.setBoard(mBoard);
+                }
+            } else {
+                mBoard.handleUserInput(dir, action);
+            }
+        }
     }
 }

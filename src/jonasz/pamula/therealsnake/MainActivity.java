@@ -7,8 +7,9 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
-import android.util.Log;
 import android.widget.Button;
+import jonasz.pamula.therealsnake.Utils;
+import jonasz.pamula.therealsnake.board.Board;
 
 public class MainActivity extends Activity {
     private SnakeView mSnakeView;
@@ -26,7 +27,7 @@ public class MainActivity extends Activity {
                 action = Board.KEY_UP;
             }
 
-            if(action!=-1) mSnakeView.getBoard().handleKey(dir,action);
+            if(action!=-1) mSnakeView.handleUserInput(dir, action);
 
             return true;
         }
@@ -46,46 +47,46 @@ public class MainActivity extends Activity {
         mButtonLeft.setOnTouchListener( mTouchListener );
         mButtonRight.setOnTouchListener( mTouchListener );
 
-        Log.i("snake", "onCreate");
+        Utils.log("onCreate");
     }
     @Override
     protected void onStart(){
         super.onStart();
-        Log.i("snake", "onStart");
+        Utils.log("onStart");
     }
     @Override
     protected void onRestart(){
         super.onRestart();
-        Log.i("snake", "onRestart");
+        Utils.log("onRestart");
     }
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("snake", "onResume");
+        Utils.log("onResume");
         mSnakeView.unpause();
     }
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("snake", "onPause");
+        Utils.log("onPause");
         mSnakeView.pause();
     }
     @Override
     protected void onStop(){
         super.onStop();
-        Log.i("snake", "onStop");
+        Utils.log("onStop");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.i("snake", "onSaveInstanceState");
+        Utils.log("onSaveInstanceState");
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.i("snake", "onRestoreInstanceState");
+        Utils.log("onRestoreInstanceState");
     }
 
 
