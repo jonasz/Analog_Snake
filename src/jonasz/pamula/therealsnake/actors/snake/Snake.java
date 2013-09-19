@@ -17,7 +17,7 @@ import jonasz.pamula.therealsnake.drawing.Drawing;
 public class Snake extends Actor {
     public static final double MIN_SPEED = 4; //units per second
     public static final double MAX_SPEED = 20;
-    public static final double SPEED_CHANGE_PER_SEC = (MAX_SPEED - MIN_SPEED)/10.;
+    public static final double SPEED_CHANGE_PER_SEC = (MAX_SPEED - MIN_SPEED)/6;
     public static final double TURN_ANGLE = Math.PI/8;
     public static final double ONE_UNIT = 4;
     public static final int MAX_SNAKE_SIZE = 500;
@@ -53,7 +53,7 @@ public class Snake extends Actor {
 
     public int getSpeed(){
         if(!mMoving) return 0;
-        int res = (int)(100. * mSpeed);
+        int res = (int)(10. * mSpeed);
         return res;
     }
 

@@ -93,7 +93,7 @@ public class Board {
                 if(apple.active && mSnake.collides(apple)){
                     Utils.log("BD go ZJAD");
                     apple.eat();
-                    mScore++;
+                    mScore+=mSnake.getSpeed();
                     mSnake.grow();
                     addRandomApple();
                 }
