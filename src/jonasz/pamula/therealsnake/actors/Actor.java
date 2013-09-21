@@ -13,7 +13,7 @@ import jonasz.pamula.therealsnake.actors.snake.SnakeCommand;
 import jonasz.pamula.therealsnake.drawing.Drawing;
 
 public abstract class Actor implements Comparable{
-    protected Board mBoard;
+    public Board mBoard;
     long id;
     static long last_id = 0;
 

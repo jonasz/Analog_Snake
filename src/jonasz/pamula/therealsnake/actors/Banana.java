@@ -21,7 +21,6 @@ import jonasz.pamula.therealsnake.Utils;
 public class Banana extends Eatable {
     static final int DISAPPEAR_AFTER = 1500;
     static final int INVINCIBLE_FOR = 7 * 1000;
-    long createdAt = 0;
 
     public int getradius(){
         return 3;
@@ -29,7 +28,6 @@ public class Banana extends Eatable {
 
     public Banana(Board board, Point coord_){
         super(board, coord_);
-        createdAt = Utils.getTime();
     }
 
     public void eat(){
@@ -37,7 +35,14 @@ public class Banana extends Eatable {
         mBoard.sounds.play(mBoard.sounds.FANFARE);
         Utils.log("Banana eaten");
 
-        mBoard.addActor(new Explosion(mBoard, mPos, "yellow"));
+        //mBoard.addActor(new Explosion(mBoard, mPos, "yellow"));
+        {
+            int i = 0;
+            for(Point p: mBoard.mSnake.getBody()){
+                if(i%4==0) mBoard.addActor(new Explosion(mBoard, p, "yellow"));
+                i++;
+            }
+        }
 
         Snake snake = mBoard.mSnake;
         snake.addCommand(new InvincibleCommand(snake,1));
@@ -56,9 +61,9 @@ public class Banana extends Eatable {
     }
 
     public void draw(Drawing d){
-        double t = (Utils.getTime() - createdAt)%1000 * (2.*Math.PI / 1000.);
-        double w = getradius() * (0.8+0.4*Math.sin(t));
-        double h = getradius() * (0.8+0.4*Math.cos(t));
+        double t = (Utils.getTime())%1000 * (2.*Math.PI / 1000.);
+        double w = getradius() * (1.+0.3*Math.sin(t));
+        double h = getradius() * (1.+0.3*Math.cos(t));
         d.putOvalOnBoard(mPos, w, h, "yellow");
     }
 }

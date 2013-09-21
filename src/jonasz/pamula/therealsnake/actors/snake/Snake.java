@@ -22,7 +22,7 @@ public class Snake extends Actor {
     public static final double ONE_UNIT = 4;
     public static final int MAX_SNAKE_SIZE = 500;
     public static final int MIN_SNAKE_SIZE = 12;
-    public final int HEAD_RADIUS = 3;
+    public final int HEAD_RADIUS = 4;
     public final int TAIL_RADIUS = 2;
     public double mSpeed = MAX_SPEED;
     private LinkedList<Point> mBody = new LinkedList<Point>();
@@ -55,6 +55,10 @@ public class Snake extends Actor {
 
         // prevent snake from slowing down after unpausing
         mLastSpeedAdjustment = Utils.getTime();
+    }
+
+    public boolean bananaEaten(){
+        return invincible > 0;
     }
 
     public void setColor(String c){
@@ -145,6 +149,16 @@ public class Snake extends Actor {
         if(mCurrentSize > MAX_SNAKE_SIZE) mCurrentSize = MAX_SNAKE_SIZE;
     }
 
+    public boolean shorten(){
+        if(mCurrentSize == MIN_SNAKE_SIZE) return false;
+        mCurrentSize-=1;
+        return true;
+    }
+
+    Point getTail(){
+        return mBody.getLast();
+    }
+
     public boolean headCollides(Eatable e){
         return e.mPos.dist(getHead()) <= HEAD_RADIUS + e.getradius();
     }
@@ -176,7 +190,7 @@ public class Snake extends Actor {
     }
 
     public void draw(Drawing d){
-        d.putCircleOnBoard(getHead(), HEAD_RADIUS, "red");
+        d.putCircleOnBoard(getHead(), HEAD_RADIUS, "green");
 
         for(Point c: getBody()){
             d.putCircleOnBoard(c, TAIL_RADIUS, mColor);

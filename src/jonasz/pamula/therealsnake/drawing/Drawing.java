@@ -34,7 +34,7 @@ public class Drawing {
     static Map<String, Paint> COLORS = new TreeMap<String, Paint>();
     static {
         Paint paint = new Paint();
-        paint.setTextSize(40);
+        paint.setTextSize(30);
         paint.setAntiAlias(true);
 
         paint.setARGB(255, 15, 175, 0);
@@ -48,6 +48,9 @@ public class Drawing {
 
         paint.setARGB(255, 255, 215, 0);
         COLORS.put("yellow", new Paint(paint));
+
+        paint.setARGB(255, 255, 50, 200);
+        COLORS.put("pink", new Paint(paint));
     }
 
     public Drawing(Board board){

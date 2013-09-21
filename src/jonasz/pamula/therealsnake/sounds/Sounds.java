@@ -40,6 +40,7 @@ public class Sounds {
     public final int GAMEOVER = 2;
     public final int NEWGAME = 3;
     public final int FANFARE = 4;
+    public final int POP = 5;
 
     public void init(){
         Utils.log("Sounds.init()");
@@ -51,6 +52,7 @@ public class Sounds {
         IDS.put(GAMEOVER, sp.load(MainActivity.getContext(), R.raw.gameover, 1));
         IDS.put(NEWGAME, sp.load(MainActivity.getContext(), R.raw.newgame, 1));
         IDS.put(FANFARE, sp.load(MainActivity.getContext(), R.raw.fanfare, 1));
+        IDS.put(POP, sp.load(MainActivity.getContext(), R.raw.pop, 1));
 
         for(Map.Entry<Integer,Integer> e: IDS.entrySet()){
             Utils.log("IDS[ " + e.getKey().toString() +
