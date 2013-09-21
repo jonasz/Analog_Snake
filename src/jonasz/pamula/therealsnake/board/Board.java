@@ -62,8 +62,10 @@ public class Board {
     }
 
     public synchronized void pause(){
-        mState = STATE_PAUSED;
-        mSnake.pause();
+        if(mState == STATE_RUNNING){
+            mState = STATE_PAUSED;
+            mSnake.pause();
+        }
     }
 
     public synchronized int getHighScore(){
@@ -72,8 +74,10 @@ public class Board {
     }
 
     public synchronized void unpause(){
-        mState = STATE_READY;
-        // mSnake.unpause() will be called when the screen is touched
+        if(mState == STATE_PAUSED){
+            mState = STATE_READY;
+            // mSnake.unpause() will be called when the screen is touched
+        }
     }
 
     public void finish(){

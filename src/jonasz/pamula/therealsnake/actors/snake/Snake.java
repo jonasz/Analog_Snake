@@ -21,7 +21,7 @@ public class Snake extends Actor {
     public static final double TURN_ANGLE = Math.PI/8;
     public static final double ONE_UNIT = 4;
     public static final int MAX_SNAKE_SIZE = 500;
-    public static final int MIN_SNAKE_SIZE = 10;
+    public static final int MIN_SNAKE_SIZE = 20;
     public final int HEAD_RADIUS = 3;
     public final int TAIL_RADIUS = 2;
     public double mSpeed = MAX_SPEED;
@@ -49,6 +49,9 @@ public class Snake extends Actor {
         for(SnakeCommand cmd: mCmdQueue){
             cmd.performAt += shift;
         }
+
+        // prevent snake from slowing down after unpausing
+        mLastSpeedAdjustment = Utils.getTime();
     }
 
     public int getSpeed(){
