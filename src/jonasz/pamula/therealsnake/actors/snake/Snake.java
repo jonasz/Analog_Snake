@@ -192,8 +192,13 @@ public class Snake extends Actor {
     public void draw(Drawing d){
         d.putCircleOnBoard(getHead(), HEAD_RADIUS, "green");
 
+        Point prev = null;
         for(Point c: getBody()){
             d.putCircleOnBoard(c, TAIL_RADIUS, mColor);
+            if(prev!=null && prev.dist(c) < 2.1*TAIL_RADIUS){
+                d.putLineOnBoard(c,prev, "black");;
+            }
+            prev = c;
         }
     }
 }

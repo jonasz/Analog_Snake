@@ -46,7 +46,7 @@ public class Sounds {
         Utils.log("Sounds.init()");
         if(sp!=null) finish();
 
-        sp = new SoundPool(3, AudioManager.STREAM_MUSIC, 0);
+        sp = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         
         IDS.put(SONAR, sp.load(MainActivity.getContext(), R.raw.sonar, 1));
         IDS.put(GAMEOVER, sp.load(MainActivity.getContext(), R.raw.gameover, 1));

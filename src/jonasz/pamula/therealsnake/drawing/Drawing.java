@@ -34,6 +34,8 @@ public class Drawing {
     static Map<String, Paint> COLORS = new TreeMap<String, Paint>();
     static {
         Paint paint = new Paint();
+        paint.setStrokeWidth(4);
+
         paint.setTextSize(30);
         paint.setAntiAlias(true);
 
@@ -51,6 +53,9 @@ public class Drawing {
 
         paint.setARGB(255, 255, 50, 200);
         COLORS.put("pink", new Paint(paint));
+
+        paint.setARGB(255, 0, 0, 0);
+        COLORS.put("black", new Paint(paint));
     }
 
     public Drawing(Board board){
@@ -94,7 +99,7 @@ public class Drawing {
         return x*mScale;
     }
 
-    public void putLine(Point p1, Point p2, String color){
+    public void putLine_(Point p1, Point p2, String color){
         mCanvas.drawLine(
                 (float)p1.getX(),
                 (float)p1.getY(),
@@ -114,6 +119,12 @@ public class Drawing {
         rw = scaleLength(rw);
         rh = scaleLength(rh);
         putOval_(pos, rw, rh, color);
+    }
+
+    public void putLineOnBoard(Point p1, Point p2, String color){
+        p1 = board2Screen(p1);
+        p2 = board2Screen(p2);
+        putLine_(p1, p2, color);
     }
 
     public void putCircle_(Point pos, double r, String color){
@@ -149,10 +160,10 @@ public class Drawing {
         Point bottomLeft = new Point(topLeft).add(0, mBoardHeight);
         Point bottomRight = new Point(bottomLeft).add(mBoardWidth, 0);
 
-        putLine(bottomLeft, bottomRight, "blue");
-        putLine(topLeft, topRight, "blue");
-        putLine(topLeft, bottomLeft, "blue");
-        putLine(topRight, bottomRight, "blue");
+        putLine_(bottomLeft, bottomRight, "blue");
+        putLine_(topLeft, topRight, "blue");
+        putLine_(topLeft, bottomLeft, "blue");
+        putLine_(topRight, bottomRight, "blue");
     }
 
     void putStats(){
