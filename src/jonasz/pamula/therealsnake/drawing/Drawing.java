@@ -136,6 +136,8 @@ public class Drawing {
         L.addLast("" + (new Integer(mBoard.mScore)));
         L.addLast("SPEED");
         L.addLast("" + (new Integer(mBoard.mSnake.getSpeed())));
+        L.addLast("HISCORE");
+        L.addLast("" + (new Integer(mBoard.getHighScore())));
 
         int X = 10;
         int Y = 100;

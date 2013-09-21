@@ -164,6 +164,7 @@ class SnakeView extends SurfaceView implements SurfaceHolder.Callback {
     public void handleUserInput(int dir, int action){
         synchronized(mBoard){
             if(mBoard.mState == Board.STATE_GAME_OVER){
+                mBoard.finish();
                 if(action == Board.KEY_DOWN) {
                     mBoard = new Board();
                     mBoard.setSurfaceSize(mSurfaceWidth, mSurfaceHeight);

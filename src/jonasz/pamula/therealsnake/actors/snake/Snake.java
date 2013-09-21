@@ -161,7 +161,7 @@ public class Snake extends Actor {
     }
 
     public void draw(Drawing d){
-        d.putCircleOnBoard(getHead(), HEAD_RADIUS, "green");
+        d.putCircleOnBoard(getHead(), HEAD_RADIUS, "red");
 
         for(Point c: getBody()){
             d.putCircleOnBoard(c, TAIL_RADIUS, "green");

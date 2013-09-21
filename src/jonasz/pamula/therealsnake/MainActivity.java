@@ -3,6 +3,7 @@ package jonasz.pamula.therealsnake;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.content.Context;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -14,6 +15,11 @@ import jonasz.pamula.therealsnake.board.Board;
 public class MainActivity extends Activity {
     private SnakeView mSnakeView;
     private Button mButtonLeft, mButtonRight;
+    static private Context context;
+
+    public static Context getContext(){
+        return context;
+    }
 
     private OnTouchListener mTouchListener = new OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event){
@@ -36,6 +42,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity.context = getApplicationContext();
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_main);
 

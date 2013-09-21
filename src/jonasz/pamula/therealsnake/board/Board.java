@@ -16,6 +16,10 @@ import jonasz.pamula.therealsnake.drawing.Drawing;
 import jonasz.pamula.therealsnake.actors.Actor;
 import java.util.Set;
 import java.util.TreeSet;
+import android.content.Context;
+import android.content.SharedPreferences;
+import jonasz.pamula.therealsnake.MainActivity;
+import jonasz.pamula.therealsnake.sounds.Sounds;
 
 public class Board {
     public static final int STATE_PAUSED = 0;
@@ -29,6 +33,7 @@ public class Board {
     public static final double BOARD_HEIGHT = 120;
 
     private Drawing mDrawing;
+    private Sounds sounds = new Sounds();
 
     long mLastUpdated = Utils.getTime();
     public Snake mSnake;
@@ -53,6 +58,7 @@ public class Board {
         mState = STATE_READY;
         addRandomApple();
         mDrawing = new Drawing(this);
+        sounds.init();
     }
 
     public synchronized void pause(){
@@ -60,9 +66,38 @@ public class Board {
         mSnake.pause();
     }
 
+    public synchronized int getHighScore(){
+        SharedPreferences pref = getSharedPref();
+        return pref.getInt("hiscore", 0);
+    }
+
     public synchronized void unpause(){
         mState = STATE_READY;
         // mSnake.unpause() will be called when the screen is touched
+    }
+
+    public void finish(){
+        sounds.finish();
+    }
+
+    SharedPreferences getSharedPref(){
+        Context context = MainActivity.getContext();
+        return context.getSharedPreferences("snake_pref", Context.MODE_PRIVATE);
+    }
+
+    void updateScore(int delta){
+        mScore += delta;
+        Context context = MainActivity.getContext();
+
+        SharedPreferences pref = getSharedPref();
+        int prevHi = pref.getInt("hiscore", 0);
+        if (mScore > prevHi){
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putInt("hiscore", mScore);
+            editor.commit();
+        }
+
+        sounds.play(sounds.SONAR);
     }
 
     long mGameOverTime = -1;
@@ -79,6 +114,7 @@ public class Board {
         if(mState!=STATE_RUNNING) return;
 
         if(mSnake.headIntersectsTail()){
+            sounds.play(sounds.GAMEOVER);
             pause();
             mState = STATE_GAME_OVER_WAITING;
             mGameOverTime = Utils.getTime();
@@ -93,7 +129,7 @@ public class Board {
                 if(apple.active && mSnake.collides(apple)){
                     Utils.log("BD go ZJAD");
                     apple.eat();
-                    mScore+=mSnake.getSpeed();
+                    updateScore(mSnake.getSpeed());
                     mSnake.grow();
                     addRandomApple();
                 }
@@ -117,6 +153,8 @@ public class Board {
             mLastUpdated = Utils.getTime();
             mState = STATE_RUNNING;
             mSnake.unpause();
+
+            sounds.play(sounds.NEWGAME);
         }
 
         if(dir == KEY_LEFT && action == KEY_DOWN) angle_mul--;
