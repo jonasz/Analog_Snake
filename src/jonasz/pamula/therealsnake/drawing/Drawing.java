@@ -3,6 +3,7 @@ package jonasz.pamula.therealsnake.drawing;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -36,7 +37,7 @@ public class Drawing {
         paint.setTextSize(40);
         paint.setAntiAlias(true);
 
-        paint.setARGB(255, 0, 255, 0);
+        paint.setARGB(255, 15, 175, 0);
         COLORS.put("green", new Paint(paint));
 
         paint.setARGB(255, 255, 0, 0);
@@ -44,6 +45,9 @@ public class Drawing {
 
         paint.setARGB(255, 150, 150, 255);
         COLORS.put("blue", new Paint(paint));
+
+        paint.setARGB(255, 255, 215, 0);
+        COLORS.put("yellow", new Paint(paint));
     }
 
     public Drawing(Board board){
@@ -99,14 +103,32 @@ public class Drawing {
     public void putCircleOnBoard(Point pos, double r, String color){
         pos = board2Screen(pos);
         r = scaleLength(r);
-        putCircle(pos, r, color);
+        putCircle_(pos, r, color);
     }
 
-    public void putCircle(Point pos, double r, String color){
+    public void putOvalOnBoard(Point pos, double rw, double rh, String color){
+        pos = board2Screen(pos);
+        rw = scaleLength(rw);
+        rh = scaleLength(rh);
+        putOval_(pos, rw, rh, color);
+    }
+
+    public void putCircle_(Point pos, double r, String color){
         mCanvas.drawCircle(
                 (float)pos.getX(),
                 (float)pos.getY(),
                 (float)r,
+                COLORS.get(color));
+    }
+
+    public void putOval_(Point pos, double w, double h, String color){
+        mCanvas.drawOval(
+                new RectF(
+                    (float)(pos.getX() - w),
+                    (float)(pos.getY()-h),
+                    (float)(pos.getX() + w),
+                    (float)(pos.getY()+h)
+                    ),
                 COLORS.get(color));
     }
 

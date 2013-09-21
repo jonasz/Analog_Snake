@@ -11,7 +11,7 @@ import jonasz.pamula.therealsnake.board.Board;
 import jonasz.pamula.therealsnake.board.Point;
 import jonasz.pamula.therealsnake.actors.snake.SnakeCommand;
 import jonasz.pamula.therealsnake.actors.Actor;
-import jonasz.pamula.therealsnake.actors.Apple;
+import jonasz.pamula.therealsnake.actors.Eatable;
 import jonasz.pamula.therealsnake.drawing.Drawing;
 
 public class Snake extends Actor {
@@ -21,7 +21,7 @@ public class Snake extends Actor {
     public static final double TURN_ANGLE = Math.PI/8;
     public static final double ONE_UNIT = 4;
     public static final int MAX_SNAKE_SIZE = 500;
-    public static final int MIN_SNAKE_SIZE = 20;
+    public static final int MIN_SNAKE_SIZE = 12;
     public final int HEAD_RADIUS = 3;
     public final int TAIL_RADIUS = 2;
     public double mSpeed = MAX_SPEED;
@@ -31,6 +31,9 @@ public class Snake extends Actor {
     private double mAngleDelta = 0; //how angle changes at each step
     private boolean initiated = false;
     public boolean mMoving = true;
+
+    public int invincible = 0;
+    String mColor = "green";
 
     private Queue<SnakeCommand>mCmdQueue = new PriorityQueue<SnakeCommand>();
     long mPausedAt = -1;
@@ -52,6 +55,10 @@ public class Snake extends Actor {
 
         // prevent snake from slowing down after unpausing
         mLastSpeedAdjustment = Utils.getTime();
+    }
+
+    public void setColor(String c){
+        mColor = c;
     }
 
     public int getSpeed(){
@@ -114,11 +121,14 @@ public class Snake extends Actor {
         long now = Utils.getTime();
         double seconds = (double)(now - mLastSpeedAdjustment)/1000.;
         mLastSpeedAdjustment = now;
-        if(Math.abs(mAngleDelta) < Utils.EPS) {
+
+        if(invincible>0){
+            mSpeed = MAX_SPEED;
+        } else if(Math.abs(mAngleDelta) < Utils.EPS) {
             slowDown(seconds * SPEED_CHANGE_PER_SEC);
         } else {
             speedUp(seconds * SPEED_CHANGE_PER_SEC);
-        } //*/
+        }
     }
 
     public void crawlOneUnit(){
@@ -131,15 +141,17 @@ public class Snake extends Actor {
     }
 
     public void grow(){
-        mCurrentSize+=5;
+        mCurrentSize+=4;
         if(mCurrentSize > MAX_SNAKE_SIZE) mCurrentSize = MAX_SNAKE_SIZE;
     }
 
-    public boolean headCollides(Apple a){
-        return a.mPos.dist(getHead()) <= HEAD_RADIUS + a.RADIUS;
+    public boolean headCollides(Eatable e){
+        return e.mPos.dist(getHead()) <= HEAD_RADIUS + e.getradius();
     }
 
     public boolean headIntersectsTail(){
+        if(invincible>0) return false;
+
         int collisions = 0;
         for(Point c: getBody()){
             if(c.dist(getHead()) <= TAIL_RADIUS + HEAD_RADIUS - 0.1) {
@@ -149,11 +161,11 @@ public class Snake extends Actor {
         return collisions > 2; //head always collides with the 'neck'
     }
 
-    public boolean collides(Apple a){
-        if(headCollides(a)) return true;
+    public boolean collides(Eatable e){
+        if(headCollides(e)) return true;
 
         for(Point c: getBody()){
-            if(a.mPos.dist(c) <= TAIL_RADIUS + a.RADIUS) return true;
+            if(e.mPos.dist(c) <= TAIL_RADIUS + e.getradius()) return true;
         }
         return false;
     }
@@ -167,7 +179,7 @@ public class Snake extends Actor {
         d.putCircleOnBoard(getHead(), HEAD_RADIUS, "red");
 
         for(Point c: getBody()){
-            d.putCircleOnBoard(c, TAIL_RADIUS, "green");
+            d.putCircleOnBoard(c, TAIL_RADIUS, mColor);
         }
     }
 }

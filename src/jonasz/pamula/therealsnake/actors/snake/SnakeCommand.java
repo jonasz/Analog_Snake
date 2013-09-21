@@ -34,8 +34,13 @@ public abstract class SnakeCommand implements Comparable{
             return 0;
         }
     }
-    SnakeCommand setTime(long time){
+    public SnakeCommand setTime(long time){
         performAt = time;
+        return this;
+    }
+
+    public SnakeCommand delay(long time){
+        performAt += time;
         return this;
     }
 }

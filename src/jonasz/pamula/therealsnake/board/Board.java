@@ -10,6 +10,8 @@ import java.util.List;
 import jonasz.pamula.therealsnake.Utils;
 import jonasz.pamula.therealsnake.actors.snake.Snake;
 import jonasz.pamula.therealsnake.actors.Apple;
+import jonasz.pamula.therealsnake.actors.Banana;
+import jonasz.pamula.therealsnake.actors.Eatable;
 import jonasz.pamula.therealsnake.actors.snake.TurnCommand;
 import jonasz.pamula.therealsnake.board.Point;
 import jonasz.pamula.therealsnake.drawing.Drawing;
@@ -20,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import jonasz.pamula.therealsnake.MainActivity;
 import jonasz.pamula.therealsnake.sounds.Sounds;
+import jonasz.pamula.therealsnake.board.FruitManager;
 
 public class Board {
     public static final int STATE_PAUSED = 0;
@@ -33,11 +36,12 @@ public class Board {
     public static final double BOARD_HEIGHT = 120;
 
     private Drawing mDrawing;
-    private Sounds sounds = new Sounds();
+    public Sounds sounds = new Sounds();
 
     long mLastUpdated = Utils.getTime();
     public Snake mSnake;
     public int mScore = 0;
+    private FruitManager mFruitManager;
 
     private Set<Actor> mActors = new TreeSet<Actor>();
     public Actor[] getActors(){
@@ -56,9 +60,9 @@ public class Board {
         mSnake = new Snake(this);
         addActor(mSnake);
         mState = STATE_READY;
-        addRandomApple();
         mDrawing = new Drawing(this);
         sounds.init();
+        mFruitManager = new FruitManager(this);
     }
 
     public synchronized void pause(){
@@ -89,7 +93,7 @@ public class Board {
         return context.getSharedPreferences("snake_pref", Context.MODE_PRIVATE);
     }
 
-    void updateScore(int delta){
+    public void updateScore(int delta){
         mScore += delta;
         Context context = MainActivity.getContext();
 
@@ -100,8 +104,6 @@ public class Board {
             editor.putInt("hiscore", mScore);
             editor.commit();
         }
-
-        sounds.play(sounds.SONAR);
     }
 
     long mGameOverTime = -1;
@@ -117,6 +119,7 @@ public class Board {
 
         if(mState!=STATE_RUNNING) return;
 
+        // check if the snake has just lost the game
         if(mSnake.headIntersectsTail()){
             sounds.play(sounds.GAMEOVER);
             pause();
@@ -126,19 +129,20 @@ public class Board {
             return;
         }
 
+        // check if the snake has just eaten something
         for(Actor a: getActors()){
             a.update();
-            if(a instanceof Apple){
-                Apple apple = (Apple)a;
-                if(apple.active && mSnake.collides(apple)){
+            if(a instanceof Eatable){
+                Eatable eatable = (Eatable)a;
+                if(eatable.active && mSnake.collides(eatable)){
                     Utils.log("BD go ZJAD");
-                    apple.eat();
-                    updateScore(mSnake.getSpeed());
-                    mSnake.grow();
-                    addRandomApple();
+                    eatable.eat();
                 }
             }
         }
+
+        // update fruits
+        mFruitManager.update();
     }
     // input handling
     public static final int KEY_LEFT = 1;
@@ -174,18 +178,6 @@ public class Board {
             case 0: tdir = TurnCommand.Direction.STRAIGHT; break;
         }
         mSnake.addCommand(new TurnCommand(mSnake, tdir));
-    }
-
-    public void addRandomApple(){
-        while(true){
-            double x = Utils.randomDouble(0, BOARD_WIDTH);
-            double y = Utils.randomDouble(0, BOARD_HEIGHT);
-            Apple a = new Apple(this, new Point(x,y));
-            if(!mSnake.collides(a)){
-                addActor(a);
-                break;
-            }
-        }
     }
 
     // drawing - delegation
