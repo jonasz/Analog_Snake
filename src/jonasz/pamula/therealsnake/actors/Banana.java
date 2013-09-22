@@ -49,11 +49,13 @@ public class Banana extends Eatable {
         snake.addCommand(new ColorCommand(snake, "yellow"));
 
         //three green flashes before returning to normal
-        long t = INVINCIBLE_FOR - 6*500;
-        for(int i=0; i<3; i++){
+        long interval = 250;
+        long t = INVINCIBLE_FOR - 8*interval;
+        for(int i=0; i<4; i++){
              snake.addCommand(new ColorCommand(snake, "green").delay(t));
-             snake.addCommand(new ColorCommand(snake, "yellow").delay(t+500));
-             t += 1000;
+             t += interval;
+             snake.addCommand(new ColorCommand(snake, "yellow").delay(t));
+             t += interval;
         }
 
         snake.addCommand(new InvincibleCommand(snake,-1).delay(INVINCIBLE_FOR));

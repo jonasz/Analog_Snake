@@ -72,6 +72,8 @@ public class FruitManager {
 
         if(shouldAddBanana(bananas)){
             addEatable(new Banana(mBoard, new Point(0,0)));
+        }
+        if(bananas>0) {
             mLastBanana = Utils.getTime();
         }
 
