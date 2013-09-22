@@ -42,7 +42,7 @@ public class Sounds {
     public final int FANFARE = 4;
     public final int POP = 5;
 
-    public void init(){
+    synchronized public void init(){
         Utils.log("Sounds.init()");
         if(sp!=null) finish();
 
@@ -60,9 +60,11 @@ public class Sounds {
         }
     }
 
-    public void finish(){
-        sp.release();
-        sp = null;
+    synchronized public void finish(){
+        if(sp!=NULL){
+            sp.release();
+            sp = null;
+        }
     }
 
     public void play(int id){
@@ -73,6 +75,17 @@ public class Sounds {
                 0,  //priority
                 0,  //loop
                 1   //rate
+               );
+    }
+
+    public void playRate(int id, float rate){
+        sp.play(
+                IDS.get(id), //sound id
+                1,  //left vol
+                1,  //right vol
+                0,  //priority
+                0,  //loop
+                rate
                );
     }
 }

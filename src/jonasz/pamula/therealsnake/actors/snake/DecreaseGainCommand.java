@@ -10,20 +10,16 @@ import jonasz.pamula.therealsnake.Utils;
 import jonasz.pamula.therealsnake.board.Board;
 import jonasz.pamula.therealsnake.board.Point;
 import jonasz.pamula.therealsnake.actors.snake.SnakeCommand;
-import jonasz.pamula.therealsnake.actors.Explosion;
 
-public class ShortenCommand extends SnakeCommand {
-    public ShortenCommand(Snake snake_){
+public class DecreaseGainCommand extends SnakeCommand {
+    public DecreaseGainCommand(Snake snake_){
         super(snake_);
     }
 
     void perform(){
-        Point p = snake.getTail();
-        Board board = snake.mBoard;
-        if(snake.shorten()){
-            board.addActor(new Explosion(board, p, "pink", 8.));
-            board.sounds.play(board.sounds.POP);
-        }
+        snake.decreaseGain();
+        performAt += 2 * 1000;
+        snake.addCommand(this);
     }
 }
 

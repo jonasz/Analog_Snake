@@ -17,7 +17,7 @@ import jonasz.pamula.therealsnake.board.Point;
 import jonasz.pamula.therealsnake.drawing.Drawing;
 import jonasz.pamula.therealsnake.actors.Actor;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import android.content.Context;
 import android.content.SharedPreferences;
 import jonasz.pamula.therealsnake.MainActivity;
@@ -43,7 +43,7 @@ public class Board {
     public int mScore = 0;
     private FruitManager mFruitManager;
 
-    private Set<Actor> mActors = new TreeSet<Actor>();
+    private Set<Actor> mActors = new HashSet<Actor>();
     public Actor[] getActors(){
         return mActors.toArray(new Actor[1]);
     }
@@ -84,7 +84,7 @@ public class Board {
         }
     }
 
-    public void finish(){
+    synchronized public void finish(){
         sounds.finish();
     }
 

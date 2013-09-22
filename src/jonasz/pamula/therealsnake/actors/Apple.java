@@ -25,14 +25,29 @@ public class Apple extends Eatable {
         super(board, coord_);
     }
 
+    float getSoundRate(){
+        float gain = mBoard.mSnake.getGain();
+        float ming = mBoard.mSnake.MIN_GAIN;
+        float maxg = mBoard.mSnake.MAX_GAIN;
+        float res = (gain - ming) / (maxg - ming); //now in [0,1]
+
+        float minr = 0.7f;
+        float maxr = 1.1f;
+        return minr + (maxr-minr)*res;
+    }
+
     public void eat(){
         super.eat();
-        mBoard.sounds.play(mBoard.sounds.SONAR);
+        mBoard.sounds.playRate(mBoard.sounds.SONAR, getSoundRate());
 
-        mBoard.updateScore(mBoard.mSnake.getSpeed());
+        mBoard.updateScore(mBoard.mSnake.getGain() * mBoard.mSnake.getSpeed());
+        mBoard.mSnake.increaseGain();
+        mBoard.mSnake.increaseGain();
+
         mBoard.mSnake.grow();
 
-        mBoard.addActor(new Explosion(mBoard, mPos, "red"));
+        mBoard.addActor(new Explosion(mBoard, mPos, "red", 8.));
+
     }
 
     public void draw(Drawing d){

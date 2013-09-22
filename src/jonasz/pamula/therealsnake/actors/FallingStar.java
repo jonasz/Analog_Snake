@@ -14,14 +14,14 @@ import jonasz.pamula.therealsnake.actors.Actor;
 import jonasz.pamula.therealsnake.drawing.Drawing;
 import jonasz.pamula.therealsnake.sounds.Sounds;
 
-public class Explosion extends Actor {
-    static final int DISAPPEAR_AFTER = 1500;
+public class FallingStar extends Actor {
+    static final int DISAPPEAR_AFTER = 3500;
     final long mCreatedAt = Utils.getTime();
     String mColor;
     Point mPos;
     double mRadius;
 
-    public Explosion(Board board, Point coord_, String color, double radius){
+    public FallingStar(Board board, Point coord_, String color, double radius){
         super(board);
         mPos = coord_;
         mColor = color;
@@ -36,15 +36,19 @@ public class Explosion extends Actor {
 
     public void draw(Drawing d){
         long passed = Utils.getTime() - mCreatedAt;
-        double len = (double)(passed)/DISAPPEAR_AFTER * mRadius;
-        int K = 9;
+        double LEN = Math.sin((double)(passed)/DISAPPEAR_AFTER * Math.PI) * mRadius;
+
+        int K = 10;
         for(int k=0; k<K; k++){
             double angle = 2.*Math.PI / K * k;
+            angle += (double)passed / DISAPPEAR_AFTER * 4 * Math.PI;
+
+            double len = LEN;
+            if(k%2==0) len *= 0.7;
             Point p = new Point(len * Math.cos(angle), len * Math.sin(angle));
             p.add(mPos);
-            //p.normalizeModulo(mBoard);
-            double r = 1.3 - (double)(passed)/DISAPPEAR_AFTER;
-            d.putCircleOnBoard(p, r, mColor);
+
+            d.putLineOnBoard(mPos, p, "gray");
         }
     }
 }

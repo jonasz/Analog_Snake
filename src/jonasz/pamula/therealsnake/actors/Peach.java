@@ -34,7 +34,7 @@ public class Peach extends Eatable {
         super.eat();
         Utils.log("Peach eaten");
 
-        mBoard.addActor(new Explosion(mBoard, mPos, "pink"));
+        mBoard.addActor(new Explosion(mBoard, mPos, "pink", 8.));
 
         int t = 250;
         for(int i=0; i<10; i++){

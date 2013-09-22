@@ -56,6 +56,9 @@ public class Drawing {
 
         paint.setARGB(255, 0, 0, 0);
         COLORS.put("black", new Paint(paint));
+
+        paint.setARGB(40, 240, 200, 200);
+        COLORS.put("gray", new Paint(paint));
     }
 
     public Drawing(Board board){
@@ -174,6 +177,8 @@ public class Drawing {
         L.addLast("" + (new Integer(mBoard.mSnake.getSpeed())));
         L.addLast("HISCORE");
         L.addLast("" + (new Integer(mBoard.getHighScore())));
+        L.addLast("GAIN");
+        L.addLast("" + (new Integer(mBoard.mSnake.getGain())));
 
         int X = 10;
         int Y = 100;

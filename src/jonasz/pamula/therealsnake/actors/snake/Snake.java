@@ -10,6 +10,7 @@ import jonasz.pamula.therealsnake.Utils;
 import jonasz.pamula.therealsnake.board.Board;
 import jonasz.pamula.therealsnake.board.Point;
 import jonasz.pamula.therealsnake.actors.snake.SnakeCommand;
+import jonasz.pamula.therealsnake.actors.snake.DecreaseGainCommand;
 import jonasz.pamula.therealsnake.actors.Actor;
 import jonasz.pamula.therealsnake.actors.Eatable;
 import jonasz.pamula.therealsnake.drawing.Drawing;
@@ -22,6 +23,8 @@ public class Snake extends Actor {
     public static final double ONE_UNIT = 4;
     public static final int MAX_SNAKE_SIZE = 500;
     public static final int MIN_SNAKE_SIZE = 12;
+    public static final int MAX_GAIN = 20;
+    public static final int MIN_GAIN = 1;
     public final int HEAD_RADIUS = 4;
     public final int TAIL_RADIUS = 2;
     public double mSpeed = MAX_SPEED;
@@ -31,6 +34,7 @@ public class Snake extends Actor {
     private double mAngleDelta = 0; //how angle changes at each step
     private boolean initiated = false;
     public boolean mMoving = true;
+    private int mGain = MIN_GAIN;
 
     public int invincible = 0;
     String mColor = "green";
@@ -90,6 +94,7 @@ public class Snake extends Actor {
 
     public void init(){
         addCommand(new CrawlCommand(this)); //initiate the movement
+        addCommand(new DecreaseGainCommand(this)); //initiate the movement
         initiated = true;
     }
 
@@ -159,6 +164,22 @@ public class Snake extends Actor {
         return mBody.getLast();
     }
 
+    public int getGain(){
+        return mGain;
+    }
+
+    public void decreaseGain(){
+        if(mGain > MIN_GAIN) {
+            mGain -= 1;
+        }
+    }
+
+    public void increaseGain(){
+        if(mGain<MAX_GAIN){
+            mGain += 1;
+        }
+    }
+
     public boolean headCollides(Eatable e){
         return e.mPos.dist(getHead()) <= HEAD_RADIUS + e.getradius();
     }
@@ -190,11 +211,16 @@ public class Snake extends Actor {
     }
 
     public void draw(Drawing d){
-        d.putCircleOnBoard(getHead(), HEAD_RADIUS, "green");
+        d.putCircleOnBoard(getHead(), HEAD_RADIUS, "red");
 
         Point prev = null;
+        int i = 0;
         for(Point c: getBody()){
-            d.putCircleOnBoard(c, TAIL_RADIUS, mColor);
+            String color = mColor;
+            if(i < getGain()) color = "red";
+            i++;
+
+            d.putCircleOnBoard(c, TAIL_RADIUS, color);
             if(prev!=null && prev.dist(c) < 2.1*TAIL_RADIUS){
                 d.putLineOnBoard(c,prev, "black");;
             }

@@ -39,7 +39,7 @@ public class Banana extends Eatable {
         {
             int i = 0;
             for(Point p: mBoard.mSnake.getBody()){
-                if(i%4==0) mBoard.addActor(new Explosion(mBoard, p, "yellow"));
+                if(i%4==0) mBoard.addActor(new Explosion(mBoard, p, "yellow", 8.));
                 i++;
             }
         }
