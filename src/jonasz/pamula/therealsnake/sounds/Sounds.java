@@ -61,7 +61,7 @@ public class Sounds {
     }
 
     synchronized public void finish(){
-        if(sp!=NULL){
+        if(sp!=null){
             sp.release();
             sp = null;
         }
