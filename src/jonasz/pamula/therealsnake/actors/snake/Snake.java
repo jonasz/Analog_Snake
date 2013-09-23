@@ -156,7 +156,10 @@ public class Snake extends Actor {
 
     public boolean shorten(){
         if(mCurrentSize == MIN_SNAKE_SIZE) return false;
+
         mCurrentSize-=1;
+        while(mBody.size()>mCurrentSize) mBody.removeLast();
+
         return true;
     }
 
